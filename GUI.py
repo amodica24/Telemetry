@@ -52,7 +52,6 @@ data_y = 165
 label_x = 950
 label_y = 100
 
-
 verd24 = tkFont.Font(family='Verdana', size=24)
 
 # gets the altitude information
