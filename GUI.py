@@ -65,7 +65,7 @@ getAlt()
 speed1 = ''
 speed_text = Label(window, font = ('Helvetica',46), bg = 'black', fg = 'orange')
 speed_text.pack(fill= BOTH, expand = 1)
-speed_text.place(x=1300, y=150)
+speed_text.place(x=1325, y=150)
 
 def getSpeed():
     global speed1
@@ -104,22 +104,60 @@ tick()
 yaw1 = ''
 yaw_info = Label(window, font = ('Helvetica',46), bg = 'black', fg = 'cyan2')
 yaw_info.pack(fill= BOTH, expand = 1)
-yaw_info.place(x=1225, y=375)
+yaw_info.place(x=1225, y=580)
 
 def getYaw():
     global yaw1
-    yaw2 = round(vehicle.attitude.yaw, 3)
+    yaw2 = round(vehicle.attitude.yaw*57.2958, 3)
     if yaw2 != yaw1:
         yaw1 = yaw2
         yaw_info.config(text = yaw2)
     # calls itself every 100 milliseconds
     # to update the speed display as needed
-    speed_text.after(100,getYaw)
+    yaw_info.after(100,getYaw)
 getYaw()
 
-    
+
+# get latitude
+
+lat1 = ''
+lat_info = Label(window, font = ('Helvetica',46), bg = 'black', fg = 'lime green')
+lat_info.pack(fill= BOTH, expand = 1)
+lat_info.place(x=900, y=375)
+
+def getLat():
+    global lat1
+    lat2 = round(vehicle.location.global_frame.lat, 3)
+    if lat2 != lat1:
+        lat1 = lat2
+        lat_info.config(text = lat2)
+    # calls itself every 100 milliseconds
+    # to update the speed display as needed
+    lat_info.after(100,getLat)
+getLat()
+
+
+# get longitude
+long1 = ''
+long_info = Label(window, font = ('Helvetica',46), bg = 'black', fg = 'red2')
+long_info.pack(fill= BOTH, expand = 1)
+long_info.place(x=1225, y=375)
+
+def getLong():
+    global long1
+    long2 = round(vehicle.location.global_frame.lon, 3)
+    if long2 != long1:
+        long1 = long2
+        long_info.config(text = long2)
+    # calls itself every 100 milliseconds
+    # to update the speed display as needed
+    long_info.after(100,getLong)
+getLong()
+
+   
 # create the functions that display which payload was dropped
 def CDA():
+    
     CDA_label = Label(text = "CDA", font = ('Verdana', 100), fg = 'white', bg = 'black')
     CDA_label.place(x=100,y=150)
     return
@@ -146,14 +184,15 @@ alt_label.place(x=900,y=80)
 speed_label = Label(text = "Speed (ft/s)", font = ('Verdana', 24),bg = 'black', fg = 'white')
 speed_label.place(x = 1250, y = 80)
 
-gps_label = Label(text = "GPS", font = ('Verdana', 24),bg = 'black', fg = 'white')
-gps_label.place(x=900, y=300)
+
+lat_label = Label(text = " Latitude", font = ('Verdana', 24),bg = 'black', fg = 'white')
+lat_label.place(x=900, y=300)
+
+lat_label = Label(text = " Longitude", font = ('Verdana', 24),bg = 'black', fg = 'white')
+lat_label.place(x=1250, y=300)
 
 yaw_label = Label(text = "Yaw (deg)", font = ('Verdana', 24),bg = 'black', fg = 'white')
-yaw_label.place(x=1250, y=300)
-
-distance_start = Label(text = "Distance from starting location (ft)", font = ('Verdana', 24),bg = 'black', fg = 'white')
-distance_start.place(x=900, y = 500)
+yaw_label.place(x=1250, y=520)
 
 
 #If you have a large number of widgets, like it looks like you will for your
@@ -168,10 +207,10 @@ supply_button = Button(window, text = "Supplies", command = supply, font = helv3
 habitat_button = Button(window, text = "Habitat", command = habitat, font = helv36, height = 2, width = 12, fg = "white", borderwidth = 0, bg = 'grey30')
 stop = Button(window, text = "Quit", command = window.destroy, font = helv36, height = 2, width = 12, fg = "red", borderwidth = 0, bg = 'grey30')
 
-CDA_button.place(x = 350, y = 750)
-supply_button.place(x = 550, y = 750)
-habitat_button.place(x = 750, y = 750)
-stop.place(x = 750, y = 670)
+CDA_button.place(x = 350, y = 700)
+supply_button.place(x = 550, y = 700)
+habitat_button.place(x = 750, y = 700)
+stop.place(x = 950, y = 700)
 
 
 window.mainloop()
