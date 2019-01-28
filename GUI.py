@@ -11,7 +11,6 @@ from ctypes import windll
 from dronekit import connect, VehicleMode, Command, LocationGlobal
 from pymavlink import mavutil
 
-
 # Connect to vehicle
 connectionString = "com5"
 print "Connecting on: ",connectionString
