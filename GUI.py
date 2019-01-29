@@ -3,10 +3,7 @@ from tkinter import *
 import sys
 import datetime
 import time
-from pyscreenshot import grab
-import pyscreenshot as ImageGrab
 import tkFont
-from ctypes import windll
 
 from dronekit import connect, VehicleMode, Command, LocationGlobal
 from pymavlink import mavutil
@@ -26,14 +23,6 @@ window.geometry("1540x840") #You want the size of the app to be 500x500
 back = tk.Frame(window,bg='black')
 window.configure(background='black')
 
-# create function definitions
-# create screenshot definition to save to a file
-def screenshot():
-    # part of the screen
-    img = grab(bbox=(100, 150, 300, 500))
-    img.save("screenImage1.jpg")
-    img.show()
-
 # get flight data
 def getFlightData():
     groundSpeed = vehicle.groundspeed
@@ -45,12 +34,14 @@ def getFlightData():
 
     return (groundSpeed, roll, pitch, altitude)
 
-helv46 = tkFont.Font(family='Verdana', size=46)
+helv46 = tkFont.Font(family='Verdana', size=120)
+helv = tkFont.Font(family='Verdana', size= 55)
 data_x = 1010
 data_y = 165
 
-label_x = 950
+label_x = 925
 label_y = 100
+
 
 verd24 = tkFont.Font(family='Verdana', size=24)
 
@@ -59,7 +50,7 @@ alt_label = Label(text = "Altitude (ft)", font = verd24, bg = 'black', fg = 'whi
 alt1 = ''
 telem = Label(window, font = helv46, bg = 'black', fg = 'yellow')
 telem.pack(fill= BOTH, expand = 1)
-telem.place(x=data_x, y=label_y+65)
+telem.place(x=data_x-60, y=label_y+40)
 
 def getAlt():
     global alt1
@@ -69,6 +60,7 @@ def getAlt():
         al1 = altitude
         telem.config(text = altitude)
     telem.after(100,getAlt)
+    
 getAlt()
 
 # gets the grounding speed information
@@ -76,7 +68,7 @@ speed_label = Label(text = "Speed (ft/s)", font = verd24 ,bg = 'black', fg = 'wh
 speed1 = ''
 speed_text = Label(window, font = helv46, bg = 'black', fg = 'orange')
 speed_text.pack(fill= BOTH, expand = 1)
-speed_text.place(x=data_x+300, y=label_y+65)
+speed_text.place(x=data_x+300-40, y=label_y+40)
 
 def getSpeed():
     global speed1
@@ -93,11 +85,11 @@ getSpeed()
 
 
 # get latitude
-lat_label = Label(text = " Latitude", font = verd24, bg = 'black', fg = 'white').place(x = label_x, y=label_y+180)
+lat_label = Label(text = " Latitude", font = verd24, bg = 'black', fg = 'white').place(x = label_x, y=label_y+180+60)
 lat1 = ''
-lat_info = Label(window, font = helv46, bg = 'black', fg = 'lime green')
+lat_info = Label(window, font = helv, bg = 'black', fg = 'lime green')
 lat_info.pack(fill= BOTH, expand = 1)
-lat_info.place(x= data_x-75, y=label_y+180+65)
+lat_info.place(x= data_x-150, y=label_y+180+65+60)
 
 def getLat():
     global lat1
@@ -106,16 +98,16 @@ def getLat():
         lat1 = lat2
         lat_info.config(text = lat2)
     # calls itself every 100 milliseconds
-    # to update the speed display as needed
+    # to update the latitude display as needed
     lat_info.after(100,getLat)
 getLat()
 
 # get longitude
-long_label = Label(text = " Longitude", font = verd24, bg = 'black', fg = 'white').place(x=label_x + 300, y=label_y+180)
+long_label = Label(text = " Longitude", font = verd24, bg = 'black', fg = 'white').place(x=label_x + 300, y=label_y+180+60)
 long1 = ''
-long_info = Label(window, font = helv46, bg = 'black', fg = 'red2')
+long_info = Label(window, font = helv, bg = 'black', fg = 'red2')
 long_info.pack(fill= BOTH, expand = 1)
-long_info.place(x=data_x+200, y=label_y+180+65)
+long_info.place(x=data_x+120, y=label_y+180+65+60)
 
 def getLong():
     global long1
@@ -129,15 +121,15 @@ def getLong():
 getLong()
 
 # get yaw information
-yaw_label = Label(text = "Yaw (deg)", font = verd24, bg = 'black', fg = 'white').place(x=label_x, y = label_y+360)
+yaw_label = Label(text = "Yaw (deg)", font = verd24, bg = 'black', fg = 'white').place(x=label_x, y = label_y+360+85)
 yaw1 = ''
-yaw_info = Label(window, font = helv46, bg = 'black', fg = 'cyan2')
+yaw_info = Label(window, font = helv, bg = 'black', fg = 'cyan2')
 yaw_info.pack(fill= BOTH, expand = 1)
-yaw_info.place(x=data_x-75, y=label_y+360+65)
+yaw_info.place(x=data_x-110, y=label_y+360+100+55)
 
 def getYaw():
     global yaw1
-    yaw2 = round(vehicle.attitude.yaw*57.2958, 3)
+    yaw2 = round(vehicle.attitude.yaw*57.2958, 2)
     if yaw2 != yaw1:
         yaw1 = yaw2
         yaw_info.config(text = yaw2)
@@ -188,13 +180,13 @@ window.option_add("*Button.Foreground", "red")
 
 # create font size
 helv36 = tkFont.Font(family='Verdana', size=16)
-btn_x = 150
-btn_y = 720
+btn_x = 30
+btn_y = 740
 
 # create buttons for dropping the payloads
 CDA_button = Button(window, text = "CDA", command = CDA, font = helv36, height = 2, width = 12, fg = "white", borderwidth = 0, bg = 'grey30').place(x = btn_x, y = btn_y)
-supply_button = Button(window, text = "Supplies", command = supply, font = helv36, height = 2, width = 12, fg = "white", borderwidth = 0, bg = 'grey30').place(x = btn_x + 200, y = btn_y)
-habitat_button = Button(window, text = "Habitat", command = habitat, font = helv36, height = 2, width = 12, fg = "white", borderwidth = 0, bg = 'grey30').place(x = btn_x + 400, y = btn_y)
-stop = Button(window, text = "Quit", command = window.destroy, font = helv36, height = 2, width = 12, fg = "red", borderwidth = 0, bg = 'grey30').place(x = btn_x+600, y = btn_y)
+supply_button = Button(window, text = "Supplies", command = supply, font = helv36, height = 2, width = 12, fg = "white", borderwidth = 0, bg = 'grey30').place(x = btn_x + 175, y = btn_y)
+habitat_button = Button(window, text = "Habitat", command = habitat, font = helv36, height = 2, width = 12, fg = "white", borderwidth = 0, bg = 'grey30').place(x = btn_x + 175+175, y = btn_y)
+stop = Button(window, text = "Quit", command = window.destroy, font = helv36, height = 2, width = 12, fg = "red", borderwidth = 0, bg = 'grey30').place(x = btn_x+3*175, y = btn_y)
 
 window.mainloop()
