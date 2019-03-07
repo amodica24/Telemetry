@@ -1,0 +1,46 @@
+import tkinter as tk
+from tkinter import *
+import sys
+import datetime
+import time
+import tkFont
+
+from dronekit import connect, VehicleMode, Command, LocationGlobal
+from pymavlink import mavutil
+
+# Connect to vehicle
+connectionString = "com5"
+print "Connecting on: ",connectionString
+vehicle = connect(connectionString, wait_ready=["groundspeed","attitude","location.global_relative_frame"], baud=57600)
+
+while not vehicle.home_location:
+    cmds = vehicle.commands
+    cmds.download()
+    cmds.wait_ready()
+    if not vehicle.home_location:
+        print " Waiting for home location ..."
+# We have a home location, so print it!        
+print "\n Home location: %s" % vehicle.home_location
+
+print "\nSet new home location"
+# Home location must be within 50km of EKF home location (or setting will fail silently)
+# In this case, just set value to current location with an easily recognisable altitude (222)
+my_location_alt = vehicle.location.global_frame
+my_location_alt.alt = 222.0
+vehicle.home_location = my_location_alt
+print " New Home Location (from attribute - altitude should be 222): %s" % vehicle.home_location
+
+#Confirm current value on vehicle by re-downloading commands
+cmds = vehicle.commands
+cmds.download()
+cmds.wait_ready()
+print " New Home Location (from vehicle - altitude should be 222): %s" % vehicle.home_location
+
+while True:
+  print " Groundspeed: %s" % vehicle.groundspeed
+  altitude = vehicle.location.global_relative_frame.alt
+    if altitude < 0:    # Dont let the dropTime become imaginary
+        altitude = 0
+  print " Altitude: %s" % altitude
+  time.sleep(0.5)
+  
