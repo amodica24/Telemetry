@@ -68,7 +68,7 @@ def getAlt():
     (groundSpeed, roll, pitch, altitude) = getFlightData()
     altitude = int(altitude*3.28084)
     if altitude != alt1:
-        al1 = altitude
+        alt1 = altitude
         telem.config(text = altitude)
     telem.after(100,getAlt)
     
